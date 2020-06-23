@@ -11,11 +11,6 @@ from pynput import keyboard
 pyautogui.FAILSAFE = True
 width, height = pyautogui.size()
 
-C_PRESSED = False
-D_PRESSED = False
-F_PRESSED = False
-S_PRESSED = False
-
 recording = False
 recText = False
 writeBuffer = ""
@@ -45,18 +40,7 @@ def on_press(key):
     # except AttributeError:
     #     print('special key {0} pressed'.format(
     #         key))
-    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED
-    try:
-        if (key.char == 'c'):
-            C_PRESSED = True
-        if (key.char == 'd'):
-            D_PRESSED = True
-        if (key.char == 'f'):
-            F_PRESSED = True
-        if (key.char == 's'):
-            S_PRESSED = True
-    except AttributeError:
-        pass
+    pass
 
 
 def on_release(key):
@@ -66,18 +50,18 @@ def on_release(key):
         # Stop listener
         return False
 
-    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED, recording, recText, writeBuffer, instructions
+    global recording, recText, writeBuffer, instructions
     try:
 
         if (not recText):
             if (key.char == 'c'):
-                C_PRESSED = False
+                instructions.append((pyautogui.position(), "c", ""))
             if (key.char == 'd'):
-                D_PRESSED = False
+                instructions.append((pyautogui.position(), "d", ""))
             if (key.char == 'f'):
-                F_PRESSED = False
+                instructions.append((pyautogui.position(), "f", ""))
             if (key.char == 's'):
-                S_PRESSED = False
+                instructions.append((pyautogui.position(), "s", ""))
             if (key.char == 'e'):
                 recording = False
         else:
@@ -122,32 +106,15 @@ listener.start()
 instructions = []
 
 
-def recordingKeyPressed():
-    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED
-    return C_PRESSED or D_PRESSED or F_PRESSED or S_PRESSED
 
-
-def getCurAction():
-    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED
-    if (D_PRESSED):
-        return 'd'
-    if (C_PRESSED):
-        return 'c'
-    if (F_PRESSED):
-        return 'f'
-    if (S_PRESSED):
-        return 's'
 
 def recordMovements():
-    global instructions, recording, C_PRESSED, D_PRESSED, S_PRESSED, recText, writeBuffer
+    global instructions, recording, recText, writeBuffer
 
     recording = True
 
     while recording:
-        if (recordingKeyPressed()):
-            instructions.append((pyautogui.position(), getCurAction(), ""))
-            while (recordingKeyPressed()):
-                pass
+        pass
     recText = False
     writeBuffer = None
 
