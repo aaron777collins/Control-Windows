@@ -96,7 +96,7 @@ def on_release(key):
         else:
             writeBuffer = ""
 
-    if (key == keyboard.Key.enter and recording):
+    if (key == keyboard.Key.enter and recording and len(instructions) > 0):
         instructions.append((pyautogui.position(), 'enter', ""))
 
 
@@ -114,6 +114,9 @@ def recordMovements():
     global instructions, recording, recText, writeBuffer
 
     recording = True
+
+    instructions = None
+    instructions = []
 
     while recording:
         pass
@@ -158,6 +161,7 @@ def mainCode():
 
         action = input("Enter r to record an action sequence\nEnter q to run an action sequence\nEnter 'e' to exit:\n")
 
+        instructions = None
         instructions = []
 
         if (action == 'e' or action == 'exit'):
