@@ -62,6 +62,8 @@ def on_release(key):
                 instructions.append((pyautogui.position(), "f", ""))
             if (key.char == 's'):
                 instructions.append((pyautogui.position(), "s", ""))
+            if (key.char == 'a'):
+                instructions.append((pyautogui.position(), "a", ""))
             if (key.char == 'e'):
                 recording = False
         else:
@@ -137,6 +139,9 @@ def execMovements():
         if (character == 'w'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.write(writeBufferLocal, interval=0.05)
+        if (character == 'a'):
+            pyautogui.moveTo(location, duration=0.25)
+            pyautogui.hotkey('ctrl', 'A')
         if (character == 'enter'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.press('enter')
@@ -178,7 +183,7 @@ def mainCode():
             name = input("Enter the file name (exclude extension type)\n")
             name = name + ".aseq"
 
-            print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\ne - end recording")
+            print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\ne - end recording")
 
             dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
 
