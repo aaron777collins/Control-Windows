@@ -65,6 +65,7 @@ def on_release(key):
             if (key.char == 'a'):
                 instructions.append((pyautogui.position(), "a", ""))
             if (key.char == 'e'):
+                instructions.append((pyautogui.position(), "end", ""))
                 recording = False
         else:
             if(key.char != '`'):
@@ -148,6 +149,8 @@ def execMovements():
         if (character == 'enter'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.press('enter')
+        if (character == 'end'):
+            break
 
 
 def mainCode():
