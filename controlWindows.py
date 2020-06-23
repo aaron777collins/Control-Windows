@@ -144,7 +144,7 @@ def execMovements():
             pyautogui.write(writeBufferLocal, interval=0.05)
         if (character == 'a'):
             pyautogui.moveTo(location, duration=0.25)
-            pyautogui.hotkey('ctrl', 'A')
+            pyautogui.hotkey('ctrl', 'a')
         if (character == 'enter'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.press('enter')
