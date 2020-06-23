@@ -14,6 +14,7 @@ width, height = pyautogui.size()
 C_PRESSED = False
 D_PRESSED = False
 F_PRESSED = False
+S_PRESSED = False
 
 recording = False
 recText = False
@@ -44,7 +45,7 @@ def on_press(key):
     # except AttributeError:
     #     print('special key {0} pressed'.format(
     #         key))
-    global C_PRESSED, D_PRESSED, F_PRESSED
+    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED
     try:
         if (key.char == 'c'):
             C_PRESSED = True
@@ -52,6 +53,8 @@ def on_press(key):
             D_PRESSED = True
         if (key.char == 'f'):
             F_PRESSED = True
+        if (key.char == 's'):
+            S_PRESSED = True
     except AttributeError:
         pass
 
@@ -63,7 +66,7 @@ def on_release(key):
         # Stop listener
         return False
 
-    global C_PRESSED, D_PRESSED, F_PRESSED, recording, recText, writeBuffer
+    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED, recording, recText, writeBuffer, instructions
     try:
 
         if (not recText):
@@ -73,6 +76,8 @@ def on_release(key):
                 D_PRESSED = False
             if (key.char == 'f'):
                 F_PRESSED = False
+            if (key.char == 's'):
+                S_PRESSED = False
             if (key.char == 'e'):
                 recording = False
         else:
@@ -118,21 +123,23 @@ instructions = []
 
 
 def recordingKeyPressed():
-    global C_PRESSED, D_PRESSED, F_PRESSED
-    return C_PRESSED or D_PRESSED or F_PRESSED
+    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED
+    return C_PRESSED or D_PRESSED or F_PRESSED or S_PRESSED
 
 
 def getCurAction():
-    global C_PRESSED, D_PRESSED, F_PRESSED
+    global C_PRESSED, D_PRESSED, F_PRESSED, S_PRESSED
     if (D_PRESSED):
         return 'd'
     if (C_PRESSED):
         return 'c'
     if (F_PRESSED):
         return 'f'
+    if (S_PRESSED):
+        return 's'
 
 def recordMovements():
-    global instructions, recording, C_PRESSED, D_PRESSED, recText, writeBuffer
+    global instructions, recording, C_PRESSED, D_PRESSED, S_PRESSED, recText, writeBuffer
 
     recording = True
 
@@ -158,6 +165,8 @@ def execMovements():
         if (character == 'f'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.rightClick(location)
+        if (character == 's'): #used for adding buffer time
+            pyautogui.moveTo(location, duration=2.0)
         if (character == 'w'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.write(writeBufferLocal, interval=0.05)
@@ -202,7 +211,7 @@ def mainCode():
             name = input("Enter the file name (exclude extension type)\n")
             name = name + ".aseq"
 
-            print("c - click\nd - double click\nf - right click\n` - toggle writing\ne - end recording")
+            print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\ne - end recording")
 
             dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
 
