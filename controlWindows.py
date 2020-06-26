@@ -5,6 +5,7 @@ import errno
 import os
 import pyautogui
 import pickle
+import subprocess
 from pynput import keyboard
 
 # pyautogui.PAUSE = 1  # enable to wait 1 second between mouse/keyboard movements/presses
@@ -124,7 +125,7 @@ def recordMovements():
     recText = False
     writeBuffer = None
 
-
+# old function used for executing old files
 def execMovements():
     global instructions
     for location, character, writeBufferLocal in instructions:
@@ -162,7 +163,7 @@ def mainCode():
 
     while (action != 'e' or action != 'exit'):
 
-        action = input("Enter r to record an action sequence\nEnter q to run an action sequence\nEnter 'e' to exit:\n")
+        action = input("Enter r to record an action sequence\nEnter q to run an action sequence\nEnter t to convert an old script to a new one\nEnter 'e' to exit:\n")
 
         instructions = None
         instructions = []
@@ -172,32 +173,152 @@ def mainCode():
 
         if (action == 'q'):
             name = input("Enter the file name (exclude extension type)\n")
-            name = name + ".aseq"
+            name = name + ".py"
 
-            dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
+            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
+
+            try:
+                reader = safe_open(dest, 'rb')
+                try:
+                    # instructions = pickle.load(reader)
+                    # used for reading old files
+                    pass
+                finally:
+                    reader.close()
+                # the code above was used for reading older files but now just checks that it exists
+                # execMovements()
+
+                cmd = 'python ' + dest
+
+                p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+                out, err = p.communicate()
+                result = out.decode().split('\n')
+                for lin in result:
+                    if not lin.startswith('#'):
+                        print(lin)
+
+            except FileNotFoundError:
+                print("ERROR: file {0} not found!".format(name))
+
+        if (action == 't'):
+            name_orig = input("Enter the old file name (exclude extension type)\n")
+            name = name_orig + ".aseq"
+
+            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
 
             try:
                 reader = safe_open(dest, 'rb')
                 try:
                     instructions = pickle.load(reader)
+
+                    name2 = name_orig + ".py"
+
+                    dest2 = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name2)
+
+                    reader2 = safe_open(dest2, 'w')
+                    try:
+                        # using python script to make human readible instead now
+                        reader2.write("import pip\n")
+                        reader2.write("import pyautogui\n\n")
+                        reader2.write("def import_or_install(package):\n")
+                        reader2.write("\ttry:\n")
+                        reader2.write("\t\t__import__(package)\n")
+                        reader2.write("\texcept ImportError:\n")
+                        reader2.write("\t\tpip.main(['install', package])\n")
+                        reader2.write("\n\nimport_or_install('pyautogui')")
+                        reader2.write("\nimport_or_install('pyautogui')\n\n")
+                        for location, character, writeBufferLocal in instructions:
+
+                            if (character == 'c'):
+                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=0.25)\n")
+                                reader2.write("pyautogui.click(" + "({0}, {1})".format(location[0], location[1]) + ")\n")
+                            if (character == 'd'):
+                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=0.25)\n")
+                                reader2.write("pyautogui.doubleClick(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=0.1)\n")
+                            if (character == 'f'):
+                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=0.25)\n")
+                                reader2.write(
+                                    "pyautogui.rightClick(" + "({0}, {1})".format(location[0], location[1]) + ")\n")
+                            if (character == 's'):  # used for adding buffer time
+                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=2.0)\n")
+                            if (character == 'w'):
+                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=0.25)\n")
+                                reader2.write("pyautogui.write(\'" + writeBufferLocal + "\', interval=0.05)\n")
+                            if (character == 'a'):
+                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=0.25)\n")
+                                reader2.write("pyautogui.hotkey('ctrl', 'a')\n")
+                            if (character == 'enter'):
+                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                    1]) + ", duration=0.25)\n")
+                                reader2.write("pyautogui.press('enter')\n")
+                            if (character == 'end'):
+                                break
+
+                        print(instructions)
+                    finally:
+                        reader2.close()
+
+
                 finally:
                     reader.close()
-                execMovements()
+
             except FileNotFoundError:
                 print("ERROR: file {0} not found!".format(name))
 
         if (action == 'r'):
             name = input("Enter the file name (exclude extension type)\n")
-            name = name + ".aseq"
+            name = name + ".py"
 
             print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\ne - end recording")
 
             dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
 
-            reader = safe_open(dest, 'wb')
+            reader = safe_open(dest, 'w')
             try:
                 recordMovements()
-                pickle.dump(instructions, reader)
+                # pickle.dump(instructions, reader)
+                # using python script to make human readible instead now
+                reader.write("import pip\n")
+                reader.write("import pyautogui\n\n")
+                reader.write("def import_or_install(package):\n")
+                reader.write("\ttry:\n")
+                reader.write("\t\t__import__(package)\n")
+                reader.write("\texcept ImportError:\n")
+                reader.write("\t\tpip.main(['install', package])\n")
+                reader.write("\n\nimport_or_install('pyautogui')")
+                reader.write("\nimport_or_install('pyautogui')\n\n")
+                for location, character, writeBufferLocal in instructions:
+
+                    if (character == 'c'):
+                        reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
+                        reader.write("pyautogui.click(" + "({0}, {1})".format(location[0], location[1]) +")\n")
+                    if (character == 'd'):
+                        reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
+                        reader.write("pyautogui.doubleClick(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.1)\n")
+                    if (character == 'f'):
+                        reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
+                        reader.write("pyautogui.rightClick(" + "({0}, {1})".format(location[0], location[1]) +")\n")
+                    if (character == 's'):  # used for adding buffer time
+                        reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=2.0)\n")
+                    if (character == 'w'):
+                        reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
+                        reader.write("pyautogui.write(\'" + writeBufferLocal + "\', interval=0.05)\n")
+                    if (character == 'a'):
+                        reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
+                        reader.write("pyautogui.hotkey('ctrl', 'a')\n")
+                    if (character == 'enter'):
+                        reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
+                        reader.write("pyautogui.press('enter')\n")
+                    if (character == 'end'):
+                        break
+
                 print(instructions)
             finally:
                 reader.close()
