@@ -188,7 +188,7 @@ def mainCode():
                 # the code above was used for reading older files but now just checks that it exists
                 # execMovements()
 
-                cmd = 'python ' + dest
+                cmd = 'python ' + "\"" + dest + "\""
 
                 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
                 out, err = p.communicate()
