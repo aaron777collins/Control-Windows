@@ -6,11 +6,17 @@ Finally, run the script and watch your computer automate those annoying,
 repetitive tasks.
 
 Recording Keys:
+
 c - click
+
 d - double-click
+
 f - right-click
+
 s - wait for 2 seconds
+
 ` - toggle writing mode
+
 e - end sequence
 
 NOTE: as a fail-safe, you can move your mouse to the top left to crash the program.
