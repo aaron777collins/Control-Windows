@@ -17,6 +17,8 @@ s - wait for 2 seconds
 
 ` - toggle writing mode
 
+a - ctrl + A hotkey
+
 e - end sequence
 
 NOTE:
