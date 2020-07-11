@@ -6,6 +6,7 @@ import os
 import pyautogui
 import pickle
 import subprocess
+import difflib
 from pynput import keyboard
 
 # pyautogui.PAUSE = 1  # enable to wait 1 second between mouse/keyboard movements/presses
@@ -173,104 +174,184 @@ def mainCode():
 
         if (action == 'q'):
             name = input("Enter the file name (exclude extension type)\n")
+            rawName = name
             name = name + ".py"
 
+            destFolder = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")
             dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
 
-            try:
-                reader = safe_open(dest, 'rb')
+            reTry = True
+
+            while reTry:
                 try:
-                    # instructions = pickle.load(reader)
-                    # used for reading old files
-                    pass
-                finally:
+                    # will create the directory if necessary
+                    reader = safe_open(dest, 'rb')
+
                     reader.close()
-                # the code above was used for reading older files but now just checks that it exists
-                # execMovements()
 
-                cmd = 'python ' + "\"" + dest + "\""
 
-                p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-                out, err = p.communicate()
-                result = out.decode().split('\n')
-                for lin in result:
-                    if not lin.startswith('#'):
-                        print(lin)
+                    cmd = 'python ' + "\"" + dest + "\""
 
-            except FileNotFoundError:
-                print("ERROR: file {0} not found!".format(name))
+                    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+                    out, err = p.communicate()
+                    result = out.decode().split('\n')
+                    for lin in result:
+                        if not lin.startswith('#'):
+                            print(lin)
+                    reTry = False
+
+                except FileNotFoundError:
+                    print("ERROR: file {0} not found!".format(name))
+
+                    fileArr = []
+
+                    for root, dirs, files in os.walk(destFolder):
+                        for file in files:
+                            if file.endswith(".py"):
+                                # print(file)
+                                fileArr.append(file)
+
+                    closestMatches = difflib.get_close_matches(rawName, fileArr, cutoff=0.4, n=5)
+
+                    if(len(closestMatches) > 0):
+                        print("Similar file names were found:")
+                        nameNum = 1
+                        for match in closestMatches:
+                            print(str(nameNum) + " - " + match)
+                            nameNum += 1
+
+                        runAgain = input("Would you like to try one of these files? (y/n):\n")
+                        if(runAgain == "y" or runAgain == "yes"):
+                            reTry = True
+                            selected_num = int(input("Which file would you like to run? (enter the id):\n"))
+
+                            # resetting the variables to account for the new name
+                            name = closestMatches[selected_num-1].rsplit('.', 1)[0]
+                            rawName = name
+                            name = name + ".py"
+
+                            destFolder = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")
+                            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
+
+                        else:
+                            reTry = False
+                    else:
+                        reTry = False
+
+
+
+
 
         if (action == 't'):
             name_orig = input("Enter the old file name (exclude extension type)\n")
             name = name_orig + ".aseq"
 
+            destFolder = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")
             dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
 
-            try:
-                reader = safe_open(dest, 'rb')
+            reTry = True
+
+            while reTry:
+
                 try:
-                    instructions = pickle.load(reader)
-
-                    name2 = name_orig + ".py"
-
-                    dest2 = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name2)
-
-                    reader2 = safe_open(dest2, 'w')
+                    reader = safe_open(dest, 'rb')
                     try:
-                        # using python script to make human readible instead now
-                        reader2.write("import pip\n")
-                        reader2.write("import pyautogui\n\n")
-                        reader2.write("def import_or_install(package):\n")
-                        reader2.write("\ttry:\n")
-                        reader2.write("\t\t__import__(package)\n")
-                        reader2.write("\texcept ImportError:\n")
-                        reader2.write("\t\tpip.main(['install', package])\n")
-                        reader2.write("\n\nimport_or_install('pyautogui')")
-                        reader2.write("\nimport_or_install('pyautogui')\n\n")
-                        for location, character, writeBufferLocal in instructions:
+                        instructions = pickle.load(reader)
 
-                            if (character == 'c'):
-                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=0.25)\n")
-                                reader2.write("pyautogui.click(" + "({0}, {1})".format(location[0], location[1]) + ")\n")
-                            if (character == 'd'):
-                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=0.25)\n")
-                                reader2.write("pyautogui.doubleClick(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=0.1)\n")
-                            if (character == 'f'):
-                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=0.25)\n")
-                                reader2.write(
-                                    "pyautogui.rightClick(" + "({0}, {1})".format(location[0], location[1]) + ")\n")
-                            if (character == 's'):  # used for adding buffer time
-                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=2.0)\n")
-                            if (character == 'w'):
-                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=0.25)\n")
-                                reader2.write("pyautogui.write(\'" + writeBufferLocal + "\', interval=0.05)\n")
-                            if (character == 'a'):
-                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=0.25)\n")
-                                reader2.write("pyautogui.hotkey('ctrl', 'a')\n")
-                            if (character == 'enter'):
-                                reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
-                                    1]) + ", duration=0.25)\n")
-                                reader2.write("pyautogui.press('enter')\n")
-                            if (character == 'end'):
-                                break
+                        name2 = name_orig + ".py"
 
-                        print(instructions)
+                        dest2 = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name2)
+
+                        reader2 = safe_open(dest2, 'w')
+                        try:
+                            # using python script to make human readible instead now
+                            reader2.write("import pip\n")
+                            reader2.write("import pyautogui\n\n")
+                            reader2.write("def import_or_install(package):\n")
+                            reader2.write("\ttry:\n")
+                            reader2.write("\t\t__import__(package)\n")
+                            reader2.write("\texcept ImportError:\n")
+                            reader2.write("\t\tpip.main(['install', package])\n")
+                            reader2.write("\n\nimport_or_install('pyautogui')")
+                            reader2.write("\nimport_or_install('pyautogui')\n\n")
+                            for location, character, writeBufferLocal in instructions:
+
+                                if (character == 'c'):
+                                    reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=0.25)\n")
+                                    reader2.write("pyautogui.click(" + "({0}, {1})".format(location[0], location[1]) + ")\n")
+                                if (character == 'd'):
+                                    reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=0.25)\n")
+                                    reader2.write("pyautogui.doubleClick(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=0.1)\n")
+                                if (character == 'f'):
+                                    reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=0.25)\n")
+                                    reader2.write(
+                                        "pyautogui.rightClick(" + "({0}, {1})".format(location[0], location[1]) + ")\n")
+                                if (character == 's'):  # used for adding buffer time
+                                    reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=2.0)\n")
+                                if (character == 'w'):
+                                    reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=0.25)\n")
+                                    reader2.write("pyautogui.write(\'" + writeBufferLocal + "\', interval=0.05)\n")
+                                if (character == 'a'):
+                                    reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=0.25)\n")
+                                    reader2.write("pyautogui.hotkey('ctrl', 'a')\n")
+                                if (character == 'enter'):
+                                    reader2.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[
+                                        1]) + ", duration=0.25)\n")
+                                    reader2.write("pyautogui.press('enter')\n")
+                                if (character == 'end'):
+                                    break
+
+                            print(instructions)
+                        finally:
+                            reader2.close()
+
+
                     finally:
-                        reader2.close()
+                        reader.close()
+                        reTry = False
 
+                except FileNotFoundError:
+                    print("ERROR: file {0} not found!".format(name))
 
-                finally:
-                    reader.close()
+                    fileArr = []
 
-            except FileNotFoundError:
-                print("ERROR: file {0} not found!".format(name))
+                    for root, dirs, files in os.walk(destFolder):
+                        for file in files:
+                            if file.endswith(".aseq"):
+                                # print(file)
+                                fileArr.append(file)
+
+                    closestMatches = difflib.get_close_matches(name_orig, fileArr, cutoff=0.4, n=5)
+
+                    if (len(closestMatches) > 0):
+                        print("Similar file names were found:")
+                        nameNum = 1
+                        for match in closestMatches:
+                            print(str(nameNum) + " - " + match)
+                            nameNum += 1
+
+                        runAgain = input("Would you like to convert one of these? (y/n):\n")
+                        if (runAgain == "y" or runAgain == "yes"):
+                            reTry = True
+                            selected_num = int(input("Which file would you like to convert? (enter the id):\n"))
+
+                            # resetting the variables to account for the new name
+                            name_orig = closestMatches[selected_num - 1].rsplit('.', 1)[0]
+                            name = name_orig + ".aseq"
+
+                            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
+
+                        else:
+                            reTry = False
+                    else:
+                        reTry = False
 
         if (action == 'r'):
             name = input("Enter the file name (exclude extension type)\n")
