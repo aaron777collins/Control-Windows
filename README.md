@@ -19,6 +19,9 @@ s - wait for 2 seconds
 
 a - ctrl + A hotkey
 
+x - press twice, once for the top left of the object and once for the bottom right of the object. The program will try to
+find this object later and click the center.
+
 e - end sequence
 
 NOTE:

@@ -3,11 +3,26 @@
 
 import errno
 import os
+
+import pip
 import pyautogui
 import pickle
 import subprocess
 import difflib
 from pynput import keyboard
+
+def import_or_install(package):
+	try:
+		__import__(package)
+	except ImportError:
+		pip.main(['install', package])
+
+import_or_install('pyautogui')
+import_or_install('pyautogui')
+import_or_install('pynput')
+import_or_install('pynput')
+import_or_install('pickle')
+import_or_install('pickle')
 
 # pyautogui.PAUSE = 1  # enable to wait 1 second between mouse/keyboard movements/presses
 pyautogui.FAILSAFE = True
@@ -16,6 +31,10 @@ width, height = pyautogui.size()
 recording = False
 recText = False
 writeBuffer = ""
+pic_num = 0
+cur_num = -1
+pic_initial_point = None
+pic_dest = ""
 
 
 def mkdir_p(path):
@@ -52,7 +71,7 @@ def on_release(key):
         # Stop listener
         return False
 
-    global recording, recText, writeBuffer, instructions
+    global recording, recText, writeBuffer, instructions, pic_num, cur_num, pic_initial_point
     try:
 
         if (not recText):
@@ -66,9 +85,26 @@ def on_release(key):
                 instructions.append((pyautogui.position(), "s", ""))
             if (key.char == 'a'):
                 instructions.append((pyautogui.position(), "a", ""))
+            if (key.char == 'x'):
+                if(cur_num == pic_num):
+                    instructions.append(([pic_initial_point, pyautogui.position()], "x", str(pic_num)))
+
+                    pyautogui.screenshot(pic_dest + str(pic_num) + ".png", region=(pic_initial_point.x, pic_initial_point.y, abs(pyautogui.position().x - pic_initial_point.x), abs(pyautogui.position().y - pic_initial_point.y)))
+
+
+
+                    pic_num += 1
+                    cur_num = -1
+                    pic_initial_point = None
+                else:
+                    cur_num = pic_num
+                    pic_initial_point = pyautogui.position()
             if (key.char == 'e'):
                 instructions.append((pyautogui.position(), "end", ""))
                 recording = False
+                cur_num = -1
+                pic_num = 0
+                pic_initial_point = None
         else:
             if(key.char != '`'):
                 if(writeBuffer != None):
@@ -156,7 +192,7 @@ def execMovements():
 
 
 def mainCode():
-    global instructions
+    global instructions, pic_dest
 
     print("NOTE: input is responsive until esc is pressed")
 
@@ -355,11 +391,14 @@ def mainCode():
 
         if (action == 'r'):
             name = input("Enter the file name (exclude extension type)\n")
+            rawName = name
             name = name + ".py"
 
-            print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\ne - end recording")
+            print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\nx - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and click the center\ne - end recording")
 
             dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
+
+            pic_dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", rawName)
 
             reader = safe_open(dest, 'w')
             try:
@@ -367,7 +406,7 @@ def mainCode():
                 # pickle.dump(instructions, reader)
                 # using python script to make human readible instead now
                 reader.write("import pip\n")
-                reader.write("import pyautogui\n\n")
+                reader.write("import pyautogui\n")
                 reader.write("def import_or_install(package):\n")
                 reader.write("\ttry:\n")
                 reader.write("\t\t__import__(package)\n")
@@ -375,6 +414,7 @@ def mainCode():
                 reader.write("\t\tpip.main(['install', package])\n")
                 reader.write("\n\nimport_or_install('pyautogui')")
                 reader.write("\nimport_or_install('pyautogui')\n\n")
+                reader.write("\nimport_or_install('opencv-python')\n\n")
                 for location, character, writeBufferLocal in instructions:
 
                     if (character == 'c'):
@@ -394,6 +434,10 @@ def mainCode():
                     if (character == 'a'):
                         reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
                         reader.write("pyautogui.hotkey('ctrl', 'a')\n")
+                    if (character == 'x'):
+                        reader.write("x, y = pyautogui.locateCenterOnScreen('" + rawName + writeBufferLocal + ".png" + "', confidence=0.8)\n")
+                        reader.write("pyautogui.moveTo( (x, y), duration=0.25)\n")
+                        reader.write("pyautogui.click((x, y))\n")
                     if (character == 'enter'):
                         reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
                         reader.write("pyautogui.press('enter')\n")
