@@ -9,6 +9,7 @@ import pyautogui
 import pickle
 import subprocess
 import difflib
+import re
 from pynput import keyboard
 
 def import_or_install(package):
@@ -435,7 +436,7 @@ def mainCode():
                         reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
                         reader.write("pyautogui.hotkey('ctrl', 'a')\n")
                     if (character == 'x'):
-                        reader.write("x, y = pyautogui.locateCenterOnScreen('" + rawName + writeBufferLocal + ".png" + "', confidence=0.8)\n")
+                        reader.write("x, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=0.8)\n")
                         reader.write("pyautogui.moveTo( (x, y), duration=0.25)\n")
                         reader.write("pyautogui.click((x, y))\n")
                     if (character == 'enter'):
