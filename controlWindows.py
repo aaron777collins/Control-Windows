@@ -100,6 +100,20 @@ def on_release(key):
                 else:
                     cur_num = pic_num
                     pic_initial_point = pyautogui.position()
+            if (key.char == 'z'):
+                if(cur_num == pic_num):
+                    instructions.append(([pic_initial_point, pyautogui.position()], "z", str(pic_num)))
+
+                    pyautogui.screenshot(pic_dest + str(pic_num) + ".png", region=(pic_initial_point.x, pic_initial_point.y, abs(pyautogui.position().x - pic_initial_point.x), abs(pyautogui.position().y - pic_initial_point.y)))
+
+
+
+                    pic_num += 1
+                    cur_num = -1
+                    pic_initial_point = None
+                else:
+                    cur_num = pic_num
+                    pic_initial_point = pyautogui.position()
             if (key.char == 'e'):
                 instructions.append((pyautogui.position(), "end", ""))
                 recording = False
@@ -395,7 +409,7 @@ def mainCode():
             rawName = name
             name = name + ".py"
 
-            print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\nx - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and click the center\ne - end recording")
+            print("c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\nx - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and click the center\nz - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and double-click the center\ne - end recording")
 
             dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
 
@@ -443,6 +457,16 @@ def mainCode():
                         reader.write("\t\tx, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=confidence_amount)\n")
                         reader.write("\t\tpyautogui.moveTo( (x, y), duration=0.25)\n")
                         reader.write("\t\tpyautogui.click((x, y))\n")
+                        reader.write("\t\tworked = True\n")
+                        reader.write("\texcept TypeError:\n\t\tconfidence_amount-=0.1\n")
+                    if (character == 'z'):
+                        reader.write("worked = False\n")
+                        reader.write("confidence_amount = 1.0\n")
+                        reader.write("while(worked != True):\n")
+                        reader.write("\ttry:\n")
+                        reader.write("\t\tx, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=confidence_amount)\n")
+                        reader.write("\t\tpyautogui.moveTo( (x, y), duration=0.25)\n")
+                        reader.write("\t\tpyautogui.doubleClick((x, y))\n")
                         reader.write("\t\tworked = True\n")
                         reader.write("\texcept TypeError:\n\t\tconfidence_amount-=0.1\n")
                     if (character == 'enter'):
