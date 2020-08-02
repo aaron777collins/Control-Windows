@@ -436,9 +436,11 @@ def mainCode():
                         reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
                         reader.write("pyautogui.hotkey('ctrl', 'a')\n")
                     if (character == 'x'):
-                        reader.write("x, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=0.8)\n")
-                        reader.write("pyautogui.moveTo( (x, y), duration=0.25)\n")
-                        reader.write("pyautogui.click((x, y))\n")
+                        reader.write("try:\n\t")
+                        reader.write("x, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=0.9)\n")
+                        reader.write("\tpyautogui.moveTo( (x, y), duration=0.25)\n")
+                        reader.write("\tpyautogui.click((x, y))\n")
+                        reader.write("except TypeError:\n\tx, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=0.75)\n\n")
                     if (character == 'enter'):
                         reader.write("pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) +", duration=0.25)\n")
                         reader.write("pyautogui.press('enter')\n")
