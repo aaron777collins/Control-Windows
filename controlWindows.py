@@ -414,6 +414,7 @@ def mainCode():
             dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
 
             pic_dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", rawName)
+            pic_dest_write_safe = re.escape(os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")) + "\\\\" + rawName
 
             reader = safe_open(dest, 'w')
             try:
@@ -454,7 +455,8 @@ def mainCode():
                         reader.write("confidence_amount = 1.0\n")
                         reader.write("while(worked != True):\n")
                         reader.write("\ttry:\n")
-                        reader.write("\t\tx, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=confidence_amount)\n")
+                        print(pic_dest)
+                        reader.write("\t\tx, y = pyautogui.locateCenterOnScreen('" + pic_dest_write_safe + writeBufferLocal + ".png" + "', confidence=confidence_amount)\n")
                         reader.write("\t\tpyautogui.moveTo( (x, y), duration=0.25)\n")
                         reader.write("\t\tpyautogui.click((x, y))\n")
                         reader.write("\t\tworked = True\n")
@@ -464,7 +466,7 @@ def mainCode():
                         reader.write("confidence_amount = 1.0\n")
                         reader.write("while(worked != True):\n")
                         reader.write("\ttry:\n")
-                        reader.write("\t\tx, y = pyautogui.locateCenterOnScreen('" + re.escape(pic_dest + writeBufferLocal) + ".png" + "', confidence=confidence_amount)\n")
+                        reader.write("\t\tx, y = pyautogui.locateCenterOnScreen('" + pic_dest_write_safe + writeBufferLocal + ".png" + "', confidence=confidence_amount)\n")
                         reader.write("\t\tpyautogui.moveTo( (x, y), duration=0.25)\n")
                         reader.write("\t\tpyautogui.doubleClick((x, y))\n")
                         reader.write("\t\tworked = True\n")
