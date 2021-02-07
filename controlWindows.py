@@ -17,6 +17,8 @@ from pynput import keyboard
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
+#Ensures pip is installed:
+subprocess.check_call([sys.executable, "-m", "ensurepip", "--default-pip"])
 
 install('pyautogui')
 install('pynput')
@@ -422,6 +424,8 @@ def mainCode():
                 reader.write("import pyautogui\n")
                 reader.write("def install(package):\n")
                 reader.write("\tsubprocess.check_call([sys.executable, \"-m\", \"pip\", \"install\", package])\n")
+                reader.write("\n\n#Ensures pip is installed:\nsubprocess.check_call([sys.executable, \"-m\", "
+                             "\"ensurepip\", \"--default-pip\"])\n")
                 reader.write("\n\ninstall('pyautogui')\n")
                 reader.write("install('opencv-python')\n\n")
                 for location, character, writeBufferLocal in instructions:
