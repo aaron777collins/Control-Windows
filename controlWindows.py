@@ -14,16 +14,6 @@ import sys
 from pynput import keyboard
 
 
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-#Ensures pip is installed:
-subprocess.check_call([sys.executable, "-m", "ensurepip", "--default-pip"])
-
-install('pyautogui')
-install('pynput')
-install('pickle-mixin')
-
 # pyautogui.PAUSE = 1  # enable to wait 1 second between mouse/keyboard movements/presses
 pyautogui.FAILSAFE = True
 width, height = pyautogui.size()
