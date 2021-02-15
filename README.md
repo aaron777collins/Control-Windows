@@ -27,8 +27,6 @@ Recording Keys:
 
     enter - presses enter (NOTE: it only records enter after the first 
             action has been recorded AND you are NOT in writing-mode)
-            It's also worth noting that it will record the enter key-press
-            regardless of whether you are in writing mode or not.
 
     e - end sequence
 

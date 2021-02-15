@@ -13,7 +13,6 @@ import subprocess
 import sys
 from pynput import keyboard
 
-
 # pyautogui.PAUSE = 1  # enable to wait 1 second between mouse/keyboard movements/presses
 pyautogui.FAILSAFE = True
 width, height = pyautogui.size()
@@ -86,8 +85,8 @@ def on_release(key):
                     instructions.append(([pic_initial_point, pyautogui.position()], "x", str(pic_num)))
 
                     pyautogui.screenshot(pic_dest + str(pic_num) + ".png", region=(
-                    pic_initial_point.x, pic_initial_point.y, abs(pyautogui.position().x - pic_initial_point.x),
-                    abs(pyautogui.position().y - pic_initial_point.y)))
+                        pic_initial_point.x, pic_initial_point.y, abs(pyautogui.position().x - pic_initial_point.x),
+                        abs(pyautogui.position().y - pic_initial_point.y)))
 
                     pic_num += 1
                     cur_num = -1
@@ -102,8 +101,8 @@ def on_release(key):
                     instructions.append(([pic_initial_point, pyautogui.position()], "z", str(pic_num)))
 
                     pyautogui.screenshot(pic_dest + str(pic_num) + ".png", region=(
-                    pic_initial_point.x, pic_initial_point.y, abs(pyautogui.position().x - pic_initial_point.x),
-                    abs(pyautogui.position().y - pic_initial_point.y)))
+                        pic_initial_point.x, pic_initial_point.y, abs(pyautogui.position().x - pic_initial_point.x),
+                        abs(pyautogui.position().y - pic_initial_point.y)))
 
                     pic_num += 1
                     cur_num = -1
@@ -133,7 +132,7 @@ def on_release(key):
                 print("Writing Mode Enabled. Anything you type will be recorded..")
             else:
                 recText = False
-                if (writeBuffer != None):   #removing backtick
+                if (writeBuffer != None):  # removing backtick
                     writeBuffer = writeBuffer[0:-1]
                 else:
                     writeBuffer = ""
@@ -420,13 +419,14 @@ def mainCode():
             name = name + ".py"
 
             print(
-                "c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\nx - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and click the center\nz - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and double-click the center\ne - end recording")
+                "c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\nx - press twice, once for the top left of the\n\tobject and once for the bottom right of the object\n\tThe program will later find this object and click the center\nz - press twice, once for the top left of the\n\tobject and once for the bottom right of the object\n\tThe program will later find this object and double-click the center\nenter - presses enter (NOTE: it only records enter after the first\n"
+                + "\t\taction has been recorded AND you are NOT in writing-mode)\ne - end recording")
 
             dest = os.path.join(FILE_FOLDER, name)
 
-            pic_dest = os.path.join(FILE_FOLDER, "images", rawName)
+            pic_dest = os.path.join("images", rawName)
             pic_dest_write_safe = re.escape(
-                os.path.join(FILE_FOLDER, "images")) + "\\\\" + rawName
+                os.path.join("images")) + "\\\\" + rawName
 
             reader = safe_open(dest, 'w')
 
