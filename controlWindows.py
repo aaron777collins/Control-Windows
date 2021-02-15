@@ -68,18 +68,23 @@ def on_release(key):
             if (key.char == 'c'):
                 instructions.append((pyautogui.position(), "c", ""))
                 print((pyautogui.position(), "c", ""))
+                pyautogui.press("backspace")
             if (key.char == 'd'):
                 instructions.append((pyautogui.position(), "d", ""))
                 print((pyautogui.position(), "d", ""))
+                pyautogui.press("backspace")
             if (key.char == 'f'):
                 instructions.append((pyautogui.position(), "f", ""))
                 print((pyautogui.position(), "f", ""))
+                pyautogui.press("backspace")
             if (key.char == 's'):
                 instructions.append((pyautogui.position(), "s", ""))
                 print((pyautogui.position(), "s", ""))
+                pyautogui.press("backspace")
             if (key.char == 'a'):
                 instructions.append((pyautogui.position(), "a", ""))
                 print((pyautogui.position(), "a", ""))
+                pyautogui.press("backspace")
             if (key.char == 'x'):
                 if (cur_num == pic_num):
                     instructions.append(([pic_initial_point, pyautogui.position()], "x", str(pic_num)))
@@ -96,6 +101,7 @@ def on_release(key):
                     cur_num = pic_num
                     pic_initial_point = pyautogui.position()
                     print((pic_initial_point, "x", cur_num))
+                pyautogui.press("backspace")
             if (key.char == 'z'):
                 if (cur_num == pic_num):
                     instructions.append(([pic_initial_point, pyautogui.position()], "z", str(pic_num)))
@@ -112,12 +118,14 @@ def on_release(key):
                     cur_num = pic_num
                     pic_initial_point = pyautogui.position()
                     print((pic_initial_point, "z", cur_num))
+                pyautogui.press("backspace")
             if (key.char == 'e'):
                 instructions.append((pyautogui.position(), "end", ""))
                 recording = False
                 cur_num = -1
                 pic_num = 0
                 pic_initial_point = None
+                pyautogui.press("backspace")
         else:
             if (recording):
                 if (writeBuffer != None):
@@ -477,7 +485,6 @@ def mainCode():
                         reader.write("confidence_amount = 1.0\n")
                         reader.write("while(worked != True):\n")
                         reader.write("\ttry:\n")
-                        print(pic_dest)
                         reader.write(
                             "\t\tx, y = pyautogui.locateCenterOnScreen('" + pic_dest_write_safe + writeBufferLocal + ".png" + "', confidence=confidence_amount)\n")
                         reader.write("\t\tpyautogui.moveTo( (x, y), duration=0.25)\n")
