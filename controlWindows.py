@@ -24,7 +24,9 @@ writeBuffer = ""
 pic_num = 0
 cur_num = -1
 pic_initial_point = None
-pic_dest = ""
+FILE_FOLDER = os.getcwd()
+pic_dest = os.path.join(FILE_FOLDER, "images")
+removingBackTick = False
 
 
 def mkdir_p(path):
@@ -59,20 +61,26 @@ def on_release(key):
         # Stop listener
         return False
 
-    global recording, recText, writeBuffer, instructions, pic_num, cur_num, pic_initial_point
+    global recording, recText, writeBuffer, instructions, pic_num, cur_num, pic_initial_point, removingBackTick
+
     try:
 
-        if (not recText):
+        if (not recText and recording):
             if (key.char == 'c'):
                 instructions.append((pyautogui.position(), "c", ""))
+                print((pyautogui.position(), "c", ""))
             if (key.char == 'd'):
                 instructions.append((pyautogui.position(), "d", ""))
+                print((pyautogui.position(), "d", ""))
             if (key.char == 'f'):
                 instructions.append((pyautogui.position(), "f", ""))
+                print((pyautogui.position(), "f", ""))
             if (key.char == 's'):
                 instructions.append((pyautogui.position(), "s", ""))
+                print((pyautogui.position(), "s", ""))
             if (key.char == 'a'):
                 instructions.append((pyautogui.position(), "a", ""))
+                print((pyautogui.position(), "a", ""))
             if (key.char == 'x'):
                 if (cur_num == pic_num):
                     instructions.append(([pic_initial_point, pyautogui.position()], "x", str(pic_num)))
@@ -83,10 +91,12 @@ def on_release(key):
 
                     pic_num += 1
                     cur_num = -1
+                    print(([pic_initial_point, pyautogui.position()], "x", str(pic_num)))
                     pic_initial_point = None
                 else:
                     cur_num = pic_num
                     pic_initial_point = pyautogui.position()
+                    print((pic_initial_point, "x", cur_num))
             if (key.char == 'z'):
                 if (cur_num == pic_num):
                     instructions.append(([pic_initial_point, pyautogui.position()], "z", str(pic_num)))
@@ -97,10 +107,12 @@ def on_release(key):
 
                     pic_num += 1
                     cur_num = -1
+                    print(([pic_initial_point, pyautogui.position()], "z", str(pic_num)))
                     pic_initial_point = None
                 else:
                     cur_num = pic_num
                     pic_initial_point = pyautogui.position()
+                    print((pic_initial_point, "z", cur_num))
             if (key.char == 'e'):
                 instructions.append((pyautogui.position(), "end", ""))
                 recording = False
@@ -108,37 +120,52 @@ def on_release(key):
                 pic_num = 0
                 pic_initial_point = None
         else:
-            if (key.char != '`'):
+            if (recording):
                 if (writeBuffer != None):
                     writeBuffer = writeBuffer + str(key.char)
                 else:
                     writeBuffer = "" + str(key.char)
-        if (key.char == '`'):
+        if (key.char == '`' and recording):
+            removingBackTick = True
+            pyautogui.press("backspace")
             if (not recText):
                 recText = True
+                print("Writing Mode Enabled. Anything you type will be recorded..")
             else:
                 recText = False
+                if (writeBuffer != None):   #removing backtick
+                    writeBuffer = writeBuffer[0:-1]
+                else:
+                    writeBuffer = ""
                 instructions.append((pyautogui.position(), "w", writeBuffer))
+                print("Writing Mode Disabled. You recorded: \'" + writeBuffer + "\'")
                 writeBuffer = None
+
+
 
 
     except AttributeError:
         pass
 
-    if (key == keyboard.Key.space and recText):
+    if (key == keyboard.Key.space and recText and recording):
         if (writeBuffer != None):
             writeBuffer = writeBuffer + " "
         else:
             writeBuffer = " "
 
-    if (key == keyboard.Key.backspace and recText):
+    if (key == keyboard.Key.backspace and recText and recording):
         if (writeBuffer != None):
             writeBuffer = writeBuffer[0:-1]
         else:
             writeBuffer = ""
+        if not removingBackTick:
+            print("Backspace detected! Your write buffer now says: \'" + writeBuffer + "\'")
+        else:
+            removingBackTick = False
 
-    if (key == keyboard.Key.enter and recording and len(instructions) > 0):
+    if (key == keyboard.Key.enter and recording and not recText and len(instructions) > 0):
         instructions.append((pyautogui.position(), 'enter', ""))
+        print((pyautogui.position(), 'enter', ""))
 
 
 listener = keyboard.Listener(
@@ -218,8 +245,7 @@ def mainCode():
             rawName = name
             name = name + ".py"
 
-            destFolder = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")
-            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
+            dest = os.path.join(FILE_FOLDER, name)
 
             reTry = True
 
@@ -245,7 +271,7 @@ def mainCode():
 
                     fileArr = []
 
-                    for root, dirs, files in os.walk(destFolder):
+                    for root, dirs, files in os.walk(FILE_FOLDER):
                         for file in files:
                             if file.endswith(".py"):
                                 # print(file)
@@ -270,8 +296,7 @@ def mainCode():
                             rawName = name
                             name = name + ".py"
 
-                            destFolder = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")
-                            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
+                            dest = os.path.join(FILE_FOLDER, name)
 
                         else:
                             reTry = False
@@ -282,8 +307,7 @@ def mainCode():
             name_orig = input("Enter the old file name (exclude extension type)\n")
             name = name_orig + ".aseq"
 
-            destFolder = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")
-            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
+            dest = os.path.join(FILE_FOLDER, name)
 
             reTry = True
 
@@ -296,7 +320,7 @@ def mainCode():
 
                         name2 = name_orig + ".py"
 
-                        dest2 = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name2)
+                        dest2 = os.path.join(FILE_FOLDER, name2)
 
                         reader2 = safe_open(dest2, 'w')
                         try:
@@ -359,7 +383,7 @@ def mainCode():
 
                     fileArr = []
 
-                    for root, dirs, files in os.walk(destFolder):
+                    for root, dirs, files in os.walk(FILE_FOLDER):
                         for file in files:
                             if file.endswith(".aseq"):
                                 # print(file)
@@ -383,7 +407,7 @@ def mainCode():
                             name_orig = closestMatches[selected_num - 1].rsplit('.', 1)[0]
                             name = name_orig + ".aseq"
 
-                            dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", name)
+                            dest = os.path.join(FILE_FOLDER, name)
 
                         else:
                             reTry = False
@@ -398,13 +422,17 @@ def mainCode():
             print(
                 "c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\nx - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and click the center\nz - press twice, once for the top left of the\nobject and once for the bottom right of the object\nThe program will later find this object and double-click the center\ne - end recording")
 
-            dest = os.path.join(os.path.expanduser('~'), 'Desktop\WCScripts', name)
+            dest = os.path.join(FILE_FOLDER, name)
 
-            pic_dest = os.path.join(os.path.expanduser('~'), "Desktop\WCScripts", rawName)
+            pic_dest = os.path.join(FILE_FOLDER, "images", rawName)
             pic_dest_write_safe = re.escape(
-                os.path.join(os.path.expanduser('~'), "Desktop\WCScripts")) + "\\\\" + rawName
+                os.path.join(FILE_FOLDER, "images")) + "\\\\" + rawName
 
             reader = safe_open(dest, 'w')
+
+            dummyreader = safe_open(os.path.join(FILE_FOLDER, "images", "dummyfile-ignoreme"), 'w')
+            dummyreader.close()
+
             try:
                 recordMovements()
                 # pickle.dump(instructions, reader)

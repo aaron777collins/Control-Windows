@@ -7,25 +7,32 @@ repetitive tasks.
 
 Recording Keys:
 
-c - click
+    c - click
 
-d - double-click
+    d - double-click
 
-f - right-click
+    f - right-click
 
-s - wait for 2 seconds
+    s - wait for 2 seconds
 
-` - toggle writing mode
+    ` - toggle writing mode
 
-a - ctrl + A hotkey
+    a - ctrl + A hotkey
 
-x - press twice, once for the top left of the object and once for the bottom right of the object. The program will try to
-find this object later and click the center.
+    x - press twice, once for the top left of the object and once for the bottom right of the object. The program will try to
+    find this object later and click the center.
 
-z - press twice, once for the top left of the object and once for the bottom right of the object. The program will try to
-find this object later and double-click the center.
+    z - press twice, once for the top left of the object and once for the bottom right of the object. The program will try to
+    find this object later and double-click the center.
 
-e - end sequence
+    enter - presses enter (NOTE: it only records enter after the first 
+            action has been recorded AND you are NOT in writing-mode)
+            It's also worth noting that it will record the enter key-press
+            regardless of whether you are in writing mode or not.
+
+    e - end sequence
+
+
 
 NOTE:
 
@@ -44,6 +51,9 @@ To make running this program easier, create a batch file(.bat) with the followin
     
 I find it is easiest to paste this into notepad, click File > Save As
 and then name it "runWC.bat". Don't forget to select the file type "All Files (\*.*)"
+
+Then, place the new batch file in the same directory as this project. All files will
+generate within the project folder (images are in "[project folder]\images")
 
 *THIS IS IMPORTANT! Do not label your script as controlWindows or checkDependencies. You will overwrite a source file.*
 
