@@ -45,7 +45,7 @@ To make running this program easier, create a batch file(.bat) with the followin
 
     @echo off
     python "checkDependencies.py"
-    python "controlWindows v15.0.py"
+    python "controlWindows.py"
     
 I find it is easiest to paste this into notepad, click File > Save As
 and then name it "runWC.bat". Don't forget to select the file type "All Files (\*.*)"
