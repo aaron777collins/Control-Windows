@@ -41,10 +41,12 @@ This program was written with globals and may have a bug or two but it is
 pretty useful. Feel free to fix any bugs or rewrite the code in a better
 way! I only wrote this because I'm pretty lazy when it comes to repetitive tasks (and to learn python)
 
+Before installing, make sure you install python (v3) and put the directory of
+your python install within the PATH environment variable. (Check the box on install)
+
 To make running this program easier, create a batch file(.bat) with the following code:
 
     @echo off
-    python "checkDependencies.py"
     python "controlWindows.py"
     
 I find it is easiest to paste this into notepad, click File > Save As
