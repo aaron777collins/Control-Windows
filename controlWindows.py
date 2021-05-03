@@ -1,7 +1,7 @@
 # Created by Aaron Collins on June 23, 2020
 # Used for automating simple tasks on your pc
 
-import checkDependencies as dependencies
+import dependencies as dependencies
 dependencies.installAll()
 
 import errno
