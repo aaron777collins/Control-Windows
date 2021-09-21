@@ -1,4 +1,4 @@
-pynput==1.6.8
-PyAutoGUI==0.9.50
-pickle-mixin==1.0.2
-Pillow==7.1.2
+pynput>=1.6.8
+PyAutoGUI>=0.9.50
+pickle-mixin>=1.0.2
+Pillow>=7.1.2
