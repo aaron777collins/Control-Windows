@@ -15,6 +15,8 @@ Recording Keys:
 
     s - wait for 2 seconds
 
+    l - move mouse to location
+
     ` - toggle writing mode
 
     a - ctrl + A hotkey
@@ -24,6 +26,9 @@ Recording Keys:
 
     z - press twice, once for the top left of the object and once for the bottom right of the object. The program will try to
     find this object later and double-click the center.
+
+    u - press twice, once for the top left of the object (to drag to) and once for the bottom right of the object. The program will try to
+    find this object to drag to later (drags to centre).
 
     enter - presses enter (NOTE: it only records enter after the first 
             action has been recorded AND you are NOT in writing-mode)
