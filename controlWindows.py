@@ -88,6 +88,18 @@ def on_release(key):
                 instructions.append((pyautogui.position(), "a", ""))
                 print((pyautogui.position(), "a", ""))
                 pyautogui.press("backspace")
+            if (key.char == 'o'):
+                instructions.append((pyautogui.position(), "o", ""))
+                print((pyautogui.position(), "o", ""))
+                pyautogui.press("backspace")
+            if (key.char == 'p'):
+                instructions.append((pyautogui.position(), "p", ""))
+                print((pyautogui.position(), "p", ""))
+                pyautogui.press("backspace")
+            if (key.char == 'i'):
+                instructions.append((pyautogui.position(), "i", ""))
+                print((pyautogui.position(), "i", ""))
+                pyautogui.press("backspace")
             if (key.char == 'x'):
                 if (cur_num == pic_num):
                     instructions.append(([pic_initial_point, pyautogui.position()], "x", str(pic_num)))
@@ -222,6 +234,12 @@ def execMovements():
         if (character == 'a'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.hotkey('ctrl', 'a')
+        if (character == 'o'):
+            pyautogui.moveTo(location, duration=0.25)
+            pyautogui.hotkey('ctrl', 'c')
+        if (character == 'p'):
+            pyautogui.moveTo(location, duration=0.25)
+            pyautogui.hotkey('ctrl', 'v')
         if (character == 'enter'):
             pyautogui.moveTo(location, duration=0.25)
             pyautogui.press('enter')
@@ -430,7 +448,7 @@ def mainCode():
             name = name + ".py"
 
             print(
-                "c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\nx - press twice, once for the top left of the\n\tobject and once for the bottom right of the object\n\tThe program will later find this object and click the center\nz - press twice, once for the top left of the\n\tobject and once for the bottom right of the object\n\tThe program will later find this object and double-click the center\nenter - presses enter (NOTE: it only records enter after the first\n"
+                "c - click\nd - double click\nf - right click\n` - toggle writing\ns - add waiting time\na - ctrl + A hotkey\no - ctrl + C hotkey\np - ctrl + V hotkey\ni - drag mouse (left click) to location\nx - press twice, once for the top left of the\n\tobject and once for the bottom right of the object\n\tThe program will later find this object and click the center\nz - press twice, once for the top left of the\n\tobject and once for the bottom right of the object\n\tThe program will later find this object and double-click the center\nenter - presses enter (NOTE: it only records enter after the first\n"
                 + "\t\taction has been recorded AND you are NOT in writing-mode)\ne - end recording")
 
             dest = os.path.join(FILE_FOLDER, name)
@@ -483,6 +501,17 @@ def mainCode():
                         reader.write(
                             "pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25)\n")
                         reader.write("pyautogui.hotkey('ctrl', 'a')\n")
+                    if (character == 'o'):
+                        reader.write(
+                            "pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25)\n")
+                        reader.write("pyautogui.hotkey('ctrl', 'c')\n")
+                    if (character == 'p'):
+                        reader.write(
+                            "pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25)\n")
+                        reader.write("pyautogui.hotkey('ctrl', 'v')\n")
+                    if (character == 'i'):
+                        reader.write(
+                            "pyautogui.dragTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25, button='left')\n")
                     if (character == 'x'):
                         reader.write("worked = False\n")
                         reader.write("confidence_amount = 1.0\n")
