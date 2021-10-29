@@ -26,4 +26,6 @@ def installAll():
 
     install("pickle-mixin")
 
+    install("opencv-python")
+
     print("\n\n########################################\nAll Dependencies Installed.\n")
