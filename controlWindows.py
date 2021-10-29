@@ -522,16 +522,10 @@ def mainCode():
                             "pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25)\n")
                         reader.write("pyautogui.write(\'" + writeBufferLocal + "\', interval=0.05)\n")
                     if (character == 'a'):
-                        reader.write(
-                            "pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25)\n")
                         reader.write("pyautogui.hotkey('ctrl', 'a')\n")
                     if (character == 'o'):
-                        reader.write(
-                            "pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25)\n")
                         reader.write("pyautogui.hotkey('ctrl', 'c')\n")
                     if (character == 'p'):
-                        reader.write(
-                            "pyautogui.moveTo(" + "({0}, {1})".format(location[0], location[1]) + ", duration=0.25)\n")
                         reader.write("pyautogui.hotkey('ctrl', 'v')\n")
                     if (character == 'i'):
                         reader.write(
