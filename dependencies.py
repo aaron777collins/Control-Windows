@@ -7,7 +7,6 @@ import sys
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-
 def checkLinux():
     return platform == "linux" or platform == "linux2"
 
@@ -25,5 +24,7 @@ def installAll():
     install("pyautogui")
 
     install("pickle-mixin")
+
+    install("Pillow")
 
     print("\n\n########################################\nAll Dependencies Installed.\n")
