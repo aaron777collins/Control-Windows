@@ -26,7 +26,9 @@ def installAll():
     install("pickle-mixin")
 
     install("Pillow")
-    
+
     install("opencv-python")
+
+    install("PyQT5")
 
     print("\n\n########################################\nAll Dependencies Installed.\n")
